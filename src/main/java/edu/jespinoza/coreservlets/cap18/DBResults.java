@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Class to store a completed results of a JDBC Query.
+/**
+ * Class to store a completed results of a JDBC Query.
  * Differs from a ResultSet in several ways:
  * <ul>
  * 		<li>ResultSet doesn't necessarily have all the data;
@@ -21,75 +22,92 @@ import java.util.List;
  */
 
 public class DBResults {
-	private Connection connection;
-	private String productName;
-	private String productVersion;
-	private int columnCount;
-	private String[] columnNames;
-	private List<String[]> queryResults;
-	String[] rowData;
-	
-	public DBResults(Connection connection, String productName, 
-			String productVersion, int columnCount,
-			String[] columnNames) {
-		this.connection = connection;
-		this.productName = productName;
-		this.productVersion = productVersion;
-		this.columnCount = columnCount;
-		this.columnNames = columnNames;
-		rowData = new String[columnCount];
-		queryResults = new ArrayList<>();
-	}
+    String[] rowData;
+    private final Connection connection;
+    private final String productName;
+    private final String productVersion;
+    private final int columnCount;
+    private final String[] columnNames;
+    private final List<String[]> queryResults;
 
-	public Connection getConnection() {
-		return connection;
-	}
+    public DBResults(Connection connection, String productName,
+                     String productVersion, int columnCount,
+                     String[] columnNames) {
+        this.connection = connection;
+        this.productName = productName;
+        this.productVersion = productVersion;
+        this.columnCount = columnCount;
+        this.columnNames = columnNames;
+        rowData = new String[columnCount];
+        queryResults = new ArrayList<>();
+    }
 
-	public String getProductName() {
-		return productName;
-	}
+    public Connection getConnection() {
+        return connection;
+    }
 
-	public String getProductVersion() {
-		return productVersion;
-	}
+    public String getProductName() {
+        return productName;
+    }
 
-	public int getColumnCount() {
-		return columnCount;
-	}
+    public String getProductVersion() {
+        return productVersion;
+    }
 
-	public String[] getColumnNames() {
-		return columnNames;
-	}
+    public int getColumnCount() {
+        return columnCount;
+    }
 
-	public int getRowCount() {
-		return queryResults.size();
-	}
-	
-	public String[] getRow(int index) {
-		return queryResults.get(index);
-	}
-	
-	public void addRow(String[] row) {
-		queryResults.add(row);
-	}
-	
-	/** Output the results as an HTML table, with
-	 * the column names as heading and the rest of
-	 * the results filling regular data cells.
-	 */
-	public String toHTMLTable(String headingColor) {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("<table border=1>\n");
-		for(String[] rowData : queryResults) {
-			buffer.append("\n\t<tr>\n");
-			for(String s : rowData) {
+    public String[] getColumnNames() {
+        return columnNames;
+    }
 
-			}
-			buffer.append("\n\t</tr>\n");
+    public int getRowCount() {
+        return queryResults.size();
+    }
+
+    public String[] getRow(int index) {
+        return queryResults.get(index);
+    }
+
+    public void addRow(String[] row) {
+        queryResults.add(row);
+    }
+
+    /**
+     * Output the results as an HTML table, with
+     * the column names as heading and the rest of
+     * the results filling regular data cells.
+     */
+    public String toHTMLTable(String headingColor) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("<table border=1>\n");
+        if(headingColor != null && !headingColor.isEmpty()) {
+        	buffer.append("\t<tr bgcolor=\"");
+        	buffer.append(headingColor);
+        	buffer.append("\">\n");
+		} else {
+        	buffer.append("\t<tr>\n");
 		}
-		
-		buffer.append("\n</table>");
-		return buffer.toString();
-	}
-		
+        for(String columnName : columnNames) {
+        	buffer.append("<th>");
+        	buffer.append(columnName);
+        	buffer.append("</th>");
+		}
+        buffer.append("\n\t</th>");
+        for (String[] rowData : queryResults) {
+            buffer.append("\n\t<tr>\n\t\t");
+            for (String s : rowData) {
+				buffer.append("<td>");
+				buffer.append(s);
+				buffer.append("</td>");
+            }
+            buffer.append("\n\t</tr>\n");
+        }
+
+        buffer.append("\n</table>");
+		System.out.println(buffer.toString());
+        return buffer.toString();
+    }
+
 }

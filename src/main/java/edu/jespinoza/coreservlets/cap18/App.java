@@ -1,10 +1,10 @@
 package edu.jespinoza.coreservlets.cap18;
 
-/**
- * Hello world!
- */
+import edu.jespinoza.coreservlets.cap18.gui.QueryViewer;
+
+
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        new QueryViewer();
     }
 }
